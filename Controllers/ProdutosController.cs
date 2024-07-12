@@ -65,7 +65,7 @@ namespace ProdutosApi.Controllers
                 }
             }
 
-            return TypedResults.NoContent();
+            return TypedResults.Ok(produto);
         }
 
         // POST: api/Produtos
@@ -76,7 +76,7 @@ namespace ProdutosApi.Controllers
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
-            return TypedResults.CreatedAtRoute("GetProduto", produto);
+            return TypedResults.Created("GetProduto", produto);
         }
 
         // DELETE: api/Produtos/5
@@ -92,7 +92,7 @@ namespace ProdutosApi.Controllers
             _context.Produtos.Remove(produto);
             await _context.SaveChangesAsync();
 
-            return TypedResults.NoContent();
+            return TypedResults.Ok(produto);
         }
 
         private bool ProdutoExists(int id)

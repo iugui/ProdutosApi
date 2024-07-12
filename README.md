@@ -1,6 +1,6 @@
 ﻿# ProdutosApi
 
-Esse é um projeto de estudo sobre API utilizando controladores no ASPNET.Core.
+Esse é um projeto para estudo sobre API utilizando controladores no ASPNET.Core.
 
 * Framework web = ASPNET.Core
 * Banco de dados = SQL

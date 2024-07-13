@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProdutosApi.Context;
 using ProdutosApi.Models;
+using ProdutosApi.Repositories;
 
 namespace ProdutosApi.Controllers
 {
@@ -9,31 +8,26 @@ namespace ProdutosApi.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        // Injeção de dependência
-        private readonly ProdutosDb _context;
-        public ProdutosController(ProdutosDb context)
+        private readonly IProdutoRepository _repository;
+        public ProdutosController(IProdutoRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/Produtos
         [HttpGet]
         public async Task<IResult> GetProdutos()
         {
-            return TypedResults.Ok(await _context.Produtos.ToListAsync());
+            var produtos = await _repository.GetProdutos();
+            return TypedResults.Ok(produtos);
         }
 
         // GET: api/Produtos/5
         [HttpGet("{id:int:required}", Name = "GetProduto")]
         public async Task<IResult> GetProduto(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
-
-            if (produto == null)
-            {
-                return TypedResults.NotFound();
-            }
-
+            var produto = await _repository.GetProduto(id);
+            if (produto is null) return TypedResults.NotFound();
             return TypedResults.Ok(produto);
         }
 
@@ -42,29 +36,8 @@ namespace ProdutosApi.Controllers
         [HttpPut("{id:int:required}")]
         public async Task<IResult> PutProduto(int id, Produto produto)
         {
-            if (id != produto.Id)
-            {
-                return TypedResults.BadRequest();
-            }
-
-            _context.Entry(produto).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProdutoExists(id))
-                {
-                    return TypedResults.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            if (produto is null) return TypedResults.BadRequest();
+            await _repository.UpdateProduto(id, produto);
             return TypedResults.Ok(produto);
         }
 
@@ -73,9 +46,8 @@ namespace ProdutosApi.Controllers
         [HttpPost]
         public async Task<IResult> PostProduto(Produto produto)
         {
-            _context.Produtos.Add(produto);
-            await _context.SaveChangesAsync();
-
+            if (produto is null) return TypedResults.BadRequest();
+            await _repository.CreateProduto(produto);
             return TypedResults.Created("GetProduto", produto);
         }
 
@@ -83,21 +55,14 @@ namespace ProdutosApi.Controllers
         [HttpDelete("{id:int:required}")]
         public async Task<IResult> DeleteProduto(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _repository.DeleteProduto(id);
+
             if (produto == null)
             {
                 return TypedResults.NotFound();
             }
 
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
-
             return TypedResults.Ok(produto);
-        }
-
-        private bool ProdutoExists(int id)
-        {
-            return _context.Produtos.Any(e => e.Id == id);
         }
     }
 }

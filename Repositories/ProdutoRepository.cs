@@ -15,7 +15,7 @@ public class ProdutoRepository : IProdutoRepository
 
     public async Task<IEnumerable<Produto>> GetProdutos()
     {
-        var produtos = await _context.Produtos.ToListAsync();
+        var produtos = await _context.Produtos.AsNoTracking().ToListAsync();
         return produtos;
     }
 
@@ -29,8 +29,8 @@ public class ProdutoRepository : IProdutoRepository
 
     public async Task<Produto> CreateProduto(Produto produto)
     {
-        _context.Produtos.Add(produto);
-        await _context.SaveChangesAsync();
+        _context.Produtos.AddAsync(produto);
+        //await _context.SaveChangesAsync();
         return produto;
     }
 
@@ -43,17 +43,17 @@ public class ProdutoRepository : IProdutoRepository
 
         _context.Entry(produto).State = EntityState.Modified;
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ProdutoExists(id))
-            {
-                throw new ArgumentNullException(nameof(produto));
-            }
-        }
+        //try
+        //{
+        //    await _context.SaveChangesAsync();
+        //}
+        //catch (DbUpdateConcurrencyException)
+        //{
+        //    if (!ProdutoExists(id))
+        //    {
+        //        throw new ArgumentNullException(nameof(produto));
+        //    }
+        //}
 
         return produto;
     }
@@ -69,7 +69,7 @@ public class ProdutoRepository : IProdutoRepository
         }
 
         _context.Produtos.Remove(produto);
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
         return produto;
     }
 

@@ -15,10 +15,9 @@ builder.Services.AddControllers();
 // swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
-
-// Contruindo a aplicãção
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Contruindo a aplicação
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -14,7 +14,7 @@ Esse é um projeto para estudo sobre API utilizando controladores no ASPNET.Core
 | GET /produtos/id | retorna um produto específico a partir do id |              | produto           |
 | POST /produtos   | Adiciona um novo produto                      | produto      | produto           |
 | PUT /produtos    | Atualiza um produto existente                 | produto      | produto           |
-| DELETE /produtos | Deleta um produto existente                   | produto      | produto           |
+| DELETE /produtos | Deleta um produto existente                   |      | produto           |
 
 # Banco de dados
 

@@ -1,13 +1,13 @@
-﻿using ProdutosApi.Models;
+﻿using ProdutosApi.DTOs;
 
 namespace ProdutosApi.Repositories;
 
 public interface IProdutoRepository
 {
-    public Task<IEnumerable<Produto>> GetProdutos();
-    public Task<Produto> GetProduto(int id);
-    public Task<Produto> CreateProduto(Produto produto);
-    public Task<Produto> UpdateProduto(int id, Produto produto);
-    public Task<Produto> DeleteProduto(int id);
+    public Task<IEnumerable<ProdutoResponseDTO>> GetProdutos();
+    public Task<ProdutoResponseDTO> GetProduto(int id);
+    public Task<ProdutoResponseDTO> CreateProduto(ProdutoRequestDTO produtoRequestDTO);
+    public Task<ProdutoResponseDTO> UpdateProduto(int id, ProdutoDTO produtoDTO);
+    public Task<ProdutoResponseDTO> DeleteProduto(int id);
 }
 

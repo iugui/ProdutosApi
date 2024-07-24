@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ProdutosApi.Context;
 using ProdutosApi.Repositories;
 
@@ -9,6 +10,7 @@ string conexao = @"Server=.\;Database=Produtos;Trusted_Connection=True;MultipleA
 builder.Services.AddDbContext<ProdutosDb>
     (
         options => options.UseSqlServer(conexao)
+        
     );
 
 builder.Services.AddControllers();

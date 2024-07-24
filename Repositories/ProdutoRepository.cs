@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProdutosApi.Context;
 using ProdutosApi.DTOs;
 using ProdutosApi.Models;
+using ProdutosApi.Pagination;
 
 namespace ProdutosApi.Repositories;
 
@@ -29,6 +30,54 @@ public class ProdutoRepository : IProdutoRepository
         #pragma warning disable
         return produtoResponseDTO;
         // Desabilitando o warning de null pois tratamos esse caso em ProdutosController
+    }
+
+    public async Task<IEnumerable<ProdutoResponseDTO>> GetProdutos(int pagina, int registrosPorPagina)
+    {
+        var produtosPorPagina = await _context.Produtos
+            .AsNoTracking()
+            .Skip((pagina-1)* registrosPorPagina)
+            .Take(registrosPorPagina)
+            .ToListAsync();
+        return produtosPorPagina.Adapt<List<ProdutoResponseDTO>>();
+    }
+
+    public async Task<IEnumerable<ProdutoResponseDTO>> GetProdutosFiltrados(string nome)
+    {
+        var produtosFiltrados = await _context.Produtos
+            .AsNoTracking()
+            .Where(produto => produto.Nome.Contains(nome))
+            .ToListAsync();
+        return produtosFiltrados.Adapt<List<ProdutoResponseDTO>>();
+    }
+
+    public async Task<IEnumerable<ProdutoResponseDTO>> GetProdutosOrdenados(string ordem)
+    {
+        if (string.IsNullOrEmpty(ordem)) { ordem = "nome_asc"; }
+
+        var produtos = from produto in _context.Produtos select produto;
+
+        switch (ordem)
+        {
+            case "nome_asc":
+                produtos = produtos.OrderBy(produto => produto.Nome);
+                break;
+            case "nome_desc":
+                produtos = produtos.OrderByDescending(produto => produto.Nome);
+                break;
+            case "id_asc":
+                produtos = produtos.OrderBy(produto => produto.Id);
+                break;
+            case "id_desc":
+                produtos = produtos.OrderByDescending(produto => produto.Id);
+                break;
+            default:
+                produtos = produtos.OrderBy(produto => produto.Nome);
+                break;
+        }
+
+        var produtosFiltrados = await produtos.AsNoTracking().ToListAsync();
+        return produtosFiltrados.Adapt<List<ProdutoResponseDTO>>();
     }
 
     public async Task<ProdutoResponseDTO> CreateProduto(ProdutoRequestDTO produtoDTO)
@@ -85,5 +134,6 @@ public class ProdutoRepository : IProdutoRepository
     {
         return _context.Produtos.Any(e => e.Id == id);
     }
+
 }
 
